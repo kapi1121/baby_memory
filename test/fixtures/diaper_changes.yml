@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  baby: one
+  change_time: 2024-06-27 21:57:21
+  type: 
+
+two:
+  baby: two
+  change_time: 2024-06-27 21:57:21
+  type: 

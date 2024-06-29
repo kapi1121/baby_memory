@@ -1,2 +1,87 @@
-<h1>Babies#index</h1>
-<p>Find me in app/views/babies/index.html.erb</p>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BabyCareApp</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <ul>
+        <% if user_signed_in? %>
+          <li><%= link_to 'Dashboard', root_path %></li>
+          <li><%= link_to 'Add Feeding', new_feeding_path %></li>
+          <li><%= link_to 'Add Diaper Change', new_diaper_change_path %></li>
+          <li><%= link_to 'View Diary', diaries_path %></li>
+          <li><%= link_to 'Logout', destroy_user_session_path, method: :delete %></li>
+        <% else %>
+          <li><%= link_to 'Home', root_path %></li>
+          <li><%= link_to 'Sign Up', new_user_registration_path %></li>
+          <li><%= link_to 'Login', new_user_session_path %></li>
+        <% end %>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <% if user_signed_in? %>
+      <h1>Welcome, <%= current_user.nickname %>!</h1>
+      <section>
+        <h2>Baby Information</h2>
+        <% if @babies.any? %>
+          <ul>
+            <% @babies.each do |baby| %>
+              <li>
+                <h3><%= baby.name %> (Born on <%= baby.birth_date.strftime('%B %d, %Y') %>)</h3>
+                <p>Height: <%= baby.height %> cm</p>
+                <p>Weight: <%= baby.weight %> kg</p>
+                <%= link_to 'View Details', baby_path(baby) %>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p>You have not added any babies yet.</p>
+          <%= link_to 'Add Baby', new_baby_path %>
+        <% end %>
+      </section>
+
+      <section>
+        <h2>Recent Activities</h2>
+        <h3>Feedings</h3>
+        <% if @babies.any? && @babies.first.feedings.any? %>
+          <ul>
+            <% @babies.first.feedings.order(created_at: :desc).limit(5).each do |feeding| %>
+              <li><%= feeding.feeding_time.strftime('%B %d, %Y %H:%M') %>: <%= feeding.amount %> ml</li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p>No recent feedings recorded.</p>
+        <% end %>
+
+        <h3>Diaper Changes</h3>
+        <% if @babies.any? && @babies.first.diaper_changes.any? %>
+          <ul>
+            <% @babies.first.diaper_changes.order(created_at: :desc).limit(5).each do |change| %>
+              <li><%= change.change_time.strftime('%B %d, %Y %H:%M') %>: <%= change.type %></li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p>No recent diaper changes recorded.</p>
+        <% end %>
+      </section>
+    <% else %>
+      <h1>Welcome to BabyCareApp</h1>
+      <p>Please sign up or log in to start tracking your baby's growth and activities.</p>
+    <% end %>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 BabyCareApp. All rights reserved.</p>
+  </footer>
+</body>
+</html>
